@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../api/axios';
-import { jwtDecode } from 'jwt-decode';
+import jwtDecode  from 'jwt-decode';
 import toast from 'react-hot-toast';         // <-- ADDED: Import toast
 import Spinner from '../components/Spinner'; // <-- ADDED: Import Spinner
 
