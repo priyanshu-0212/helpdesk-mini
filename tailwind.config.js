@@ -1,10 +1,9 @@
-// client/tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class', // <-- Add this line
+  darkMode: 'class',
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}", // <-- Correct path
   ],
   theme: {
     extend: {},
