@@ -1,0 +1,97 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // <-- The only change is on this line
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+
+  createdTickets    Ticket[]        @relation("Creator")
+  assignedTickets   Ticket[]        @relation("Agent")
+  comments          Comment[]
+  timelineEvents    TimelineEvent[]
+
+  @@map("users")
+}
+
+model Ticket {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
+  status       Status   @default(OPEN)
+  priority     Priority @default(MEDIUM)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  slaDeadline  DateTime
+
+  version      Int      @default(1)
+
+  creatorId    Int
+  creator      User     @relation("Creator", fields: [creatorId], references: [id])
+
+  agentId      Int?
+  agent        User?    @relation("Agent", fields: [agentId], references: [id])
+
+  comments       Comment[]
+  timelineEvents TimelineEvent[]
+
+  @@map("tickets")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model TimelineEvent {
+  id        Int      @id @default(autoincrement())
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
+
+  actorId   Int
+  actor     User     @relation(fields: [actorId], references: [id])
+
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@map("timeline_events")
+}
+
+enum Role {
+  USER
+  AGENT
+  ADMIN
+}
+
+enum Status {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}

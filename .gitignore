@@ -1,0 +1,13 @@
+# Dependencies
+/node_modules
+
+# Vite build output
+/dist
+
+# Environment variables
+.env
+.env*.local
+
+# Prisma
+/prisma/dev.db
+/prisma/dev.db-journal
